@@ -1,9 +1,8 @@
 package com.safaricom.mpessa_coding_interview.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.Transaction;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,8 +13,11 @@ public class Reversal {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     private String reversal_id;
-    private String transfer_id;
+    @OneToOne
+    @JoinColumn(name = "transfer_id")
+    private Transfer transfer;
     @CreationTimestamp
 private LocalDateTime created_t;
 }
