@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.Transaction;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +20,9 @@ public class Reversal {
     @JoinColumn(name = "transfer_id")
     private Transfer transfer;
     @CreationTimestamp
-private LocalDateTime created_t;
+private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
 
 

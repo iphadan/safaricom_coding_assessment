@@ -3,6 +3,7 @@ package com.safaricom.mpessa_coding_interview.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +22,7 @@ public class IdempotencyRecord {
     private String requestHash;
 
     @Column(nullable = false, length = 20)
-    private String status; // RUNNING, COMPLETED, FAILED
+    private String status;
 
     @Column(name = "response_code")
     private int responseCode;
@@ -32,4 +33,6 @@ public class IdempotencyRecord {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

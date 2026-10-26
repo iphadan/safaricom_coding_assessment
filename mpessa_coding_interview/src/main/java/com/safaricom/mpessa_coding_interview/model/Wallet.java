@@ -4,6 +4,7 @@ import com.safaricom.mpessa_coding_interview.enums.WalletStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -23,15 +24,17 @@ public class Wallet {
     private WalletStatus status = WalletStatus.ACTIVE;
 
     @Column(nullable = false)
-    private int balance; // in santim
+    private int balance;
 
     @Column(nullable = false)
-    private int reserved; // in santim (for in-flight payouts)
+    private int reserved;
 
     @Column(nullable = false)
-    private int available; // balance - reserved
+    private int available;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

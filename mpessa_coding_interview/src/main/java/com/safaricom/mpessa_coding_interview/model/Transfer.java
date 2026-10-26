@@ -4,6 +4,7 @@ import com.safaricom.mpessa_coding_interview.enums.TransferStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -26,7 +27,7 @@ public class Transfer {
     private String toWallet;
 
     @Column(nullable = false)
-    private int amount; // in santim
+    private int amount; // Most amount balance and reserved should be placed in BgDecimal
 
     @Column(nullable = false, length = 64)
     private String reference;
@@ -41,4 +42,6 @@ public class Transfer {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

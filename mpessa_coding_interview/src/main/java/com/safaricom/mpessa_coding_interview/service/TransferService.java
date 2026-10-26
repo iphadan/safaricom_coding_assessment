@@ -46,10 +46,7 @@ public class TransferService {
             throw new ResponseStatusException(HttpStatus.valueOf(422), "SAME_WALLET");
         }
 
-        // Idempotency check handling
-        // (In a complete implementation, hash the request body and check IdempotencyRecord)
 
-        // Deadlock Prevention: Lock wallets in consistent sorted order
         String firstId = req.getFromWallet().compareTo(req.getToWallet()) < 0 ? req.getFromWallet() : req.getToWallet();
         String secondId = firstId.equals(req.getFromWallet()) ? req.getToWallet() : req.getFromWallet();
 
@@ -66,12 +63,11 @@ public class TransferService {
             throw new ResponseStatusException(HttpStatus.valueOf(422), "WALLET_NOT_ACTIVE");
         }
 
-        // Check sufficient funds (available = balance - reserved)
+        // Check sufficient funds (available = balance - reserved) checked
         if (sender.getAvailable() < req.getAmount()) {
             throw new ResponseStatusException(HttpStatus.valueOf(422), "INSUFFICIENT_FUNDS");
         }
 
-        // Update balances atomically
         sender.setBalance(sender.getBalance() - req.getAmount());
         sender.setAvailable(sender.getBalance() - sender.getReserved());
 
@@ -81,7 +77,7 @@ public class TransferService {
         walletRepo.save(sender);
         walletRepo.save(receiver);
 
-        // Record Transfer
+        // Record Transfer - per the document
         String transferId = "T-" + UUID.randomUUID().toString().substring(0, 8);
         Transfer transfer = new Transfer();
         transfer.setId(transferId);
