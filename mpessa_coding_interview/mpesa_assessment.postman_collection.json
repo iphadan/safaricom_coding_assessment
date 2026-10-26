@@ -1,0 +1,188 @@
+{
+	"info": {
+		"name": "M-Pesa Wallet Service Assessment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Internal & Seeder",
+			"item": [
+				{
+					"name": "Reset and Seed Database",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/mpesa/internal/reset",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["mpesa", "internal", "reset"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Wallets",
+			"item": [
+				{
+					"name": "Get Wallet Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/mpesa/v1/wallets/W001",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["mpesa", "v1", "wallets", "W001"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. P2P Transfers",
+			"item": [
+				{
+					"name": "Execute P2P Transfer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Idempotency-Key",
+								"value": "transfer-key-001"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from_wallet\": \"W001\",\n  \"to_wallet\": \"W002\",\n  \"amount\": 10000,\n  \"reference\": \"rent-payment\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/mpesa/v1/p2p/transfers",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["mpesa", "v1", "p2p", "transfers"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Payouts",
+			"item": [
+				{
+					"name": "Initiate Bank Payout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Idempotency-Key",
+								"value": "payout-key-001"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"payout_id\": \"PO-001\",\n  \"wallet_id\": \"W001\",\n  \"bank_account\": \"ACC-123456\",\n  \"amount\": 20000\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/mpesa/v1/payouts",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["mpesa", "v1", "payouts"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payout Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/mpesa/v1/payouts/PO-001",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8081",
+							"path": ["mpesa", "v1", "payouts", "PO-001"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Fake Bank (Port 9090)",
+			"item": [
+				{
+					"name": "Bank Process Payout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"payout_id\": \"PO-001\",\n  \"bank_account\": \"ACC-123456\",\n  \"amount\": 20000\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/bank/payouts",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "9090",
+							"path": ["bank", "payouts"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bank Get Payout Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/bank/payouts/PO-001",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "9090",
+							"path": ["bank", "payouts", "PO-001"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bank Total Paid Reconciliation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/bank/total-paid",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "9090",
+							"path": ["bank", "total-paid"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
