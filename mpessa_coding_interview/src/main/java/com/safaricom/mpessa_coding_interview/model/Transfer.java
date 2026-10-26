@@ -1,27 +1,44 @@
 package com.safaricom.mpessa_coding_interview.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.safaricom.mpessa_coding_interview.enums.TransferStatus;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
+@Table(name = "transfers", indexes = {
+        @Index(name = "idx_transfer_from", columnList = "from_wallet"),
+        @Index(name = "idx_transfer_to", columnList = "to_wallet")
+})
+@Data
 public class Transfer {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(length = 64)
     private String id;
-    private String transfer_id;
-    private String from_wallet;
-    private String to_wallet;
-    private int amount;
+
+    @Column(name = "from_wallet", nullable = false, length = 64)
+    private String fromWallet;
+
+    @Column(name = "to_wallet", nullable = false, length = 64)
+    private String toWallet;
+
+    @Column(nullable = false)
+    private int amount; // in santim
+
+    @Column(nullable = false, length = 64)
     private String reference;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private TransferStatus status = TransferStatus.COMPLETED;
+
+    @Column(name = "reversal_id", length = 64)
+    private String reversalId;
+
     @CreationTimestamp
-    private LocalDateTime created_at;
-
-
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }

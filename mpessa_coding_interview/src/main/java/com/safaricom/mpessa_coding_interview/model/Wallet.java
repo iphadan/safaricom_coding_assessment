@@ -1,28 +1,37 @@
 package com.safaricom.mpessa_coding_interview.model;
 
 import com.safaricom.mpessa_coding_interview.enums.WalletStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.cglib.core.Local;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "wallets", indexes = {
+        @Index(name = "idx_wallet_status", columnList = "status")
+})
 @Data
 public class Wallet {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(length = 64)
     private String id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private WalletStatus status = WalletStatus.ACTIVE;
-    private int balance;
-    private int reserved;
-    private int available;
+
+    @Column(nullable = false)
+    private int balance; // in santim
+
+    @Column(nullable = false)
+    private int reserved; // in santim (for in-flight payouts)
+
+    @Column(nullable = false)
+    private int available; // balance - reserved
+
     @CreationTimestamp
-    private LocalDateTime created_at;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }
