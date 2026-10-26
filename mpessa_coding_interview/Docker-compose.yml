@@ -17,7 +17,7 @@ services:
 
   fake-bank:
     build: .
-    # Or reference your fake bank container/image running on port 9090
+
     ports:
       - "9090:9090"
     environment:
