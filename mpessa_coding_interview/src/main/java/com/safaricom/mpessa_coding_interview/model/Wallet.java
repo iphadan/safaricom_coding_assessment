@@ -2,6 +2,7 @@ package com.safaricom.mpessa_coding_interview.model;
 
 import com.safaricom.mpessa_coding_interview.enums.WalletStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,9 +28,12 @@ public class Wallet {
     private int balance;
 
     @Column(nullable = false)
+    @Min(value = 0)
+
     private int reserved;
 
     @Column(nullable = false)
+    @Min(value = 0)
     private int available;
 
     @CreationTimestamp

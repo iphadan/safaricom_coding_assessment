@@ -64,7 +64,7 @@ public class PayoutService {
 
         PayoutCreateResponse res = new PayoutCreateResponse();
         res.setPayoutId(payoutId);
-        res.setStatus("PENDING");
+        res.setStatus(PayoutStatus.PENDING.name());
         return res;
     }
 
@@ -83,13 +83,12 @@ public class PayoutService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid callback status");
         }
 
-        // Handle idempotency / conflict rules for final states (SUCCEEDED / FAILED)
         if (payout.getStatus() == PayoutStatus.SUCCEEDED || payout.getStatus() == PayoutStatus.FAILED) {
             if (payout.getStatus() != incomingStatus) {
                 payout.setConflict(true);
                 payoutRepo.save(payout);
             }
-            return; // Already in final state, idempotent return 200
+            return;
         }
 
         if (incomingStatus == PayoutStatus.SUCCEEDED) {
