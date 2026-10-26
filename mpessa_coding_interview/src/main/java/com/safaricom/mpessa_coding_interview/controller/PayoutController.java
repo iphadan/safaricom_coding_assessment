@@ -3,6 +3,7 @@ package com.safaricom.mpessa_coding_interview.controller;
 import com.safaricom.mpessa_coding_interview.dto.BankCallbackRequest;
 import com.safaricom.mpessa_coding_interview.dto.PayoutCreateResponse;
 import com.safaricom.mpessa_coding_interview.dto.PayoutRequest;
+import com.safaricom.mpessa_coding_interview.dto.PayoutResponse;
 import com.safaricom.mpessa_coding_interview.service.PayoutService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/mpesa/v1")
+@RequestMapping("/mpesa/v1/payouts")
 public class PayoutController {
 
     private final PayoutService payoutService;
@@ -31,5 +32,10 @@ public class PayoutController {
     public ResponseEntity<Void> handleBankCallback(@Valid @RequestBody BankCallbackRequest request) {
         payoutService.handleBankCallback(request);
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<PayoutResponse> getPayoutStatus(@PathVariable("id") String payoutId) {
+        PayoutResponse response = payoutService.getPayoutStatus(payoutId);
+        return ResponseEntity.ok(response);
     }
 }

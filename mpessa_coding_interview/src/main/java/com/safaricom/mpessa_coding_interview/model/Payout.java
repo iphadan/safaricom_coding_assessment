@@ -35,7 +35,7 @@ public class Payout {
 
     @Column(name = "bank_ref", length = 128)
     private String bankRef;
-
+private String reason;
     @Column(nullable = false)
     private boolean conflict = false;
 

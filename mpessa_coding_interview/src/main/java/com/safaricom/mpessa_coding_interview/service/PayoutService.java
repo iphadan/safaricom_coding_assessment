@@ -3,6 +3,7 @@ package com.safaricom.mpessa_coding_interview.service;
 import com.safaricom.mpessa_coding_interview.dto.BankCallbackRequest;
 import com.safaricom.mpessa_coding_interview.dto.PayoutCreateResponse;
 import com.safaricom.mpessa_coding_interview.dto.PayoutRequest;
+import com.safaricom.mpessa_coding_interview.dto.PayoutResponse;
 import com.safaricom.mpessa_coding_interview.enums.PayoutStatus;
 import com.safaricom.mpessa_coding_interview.enums.WalletStatus;
 import com.safaricom.mpessa_coding_interview.model.LedgerEntry;
@@ -31,7 +32,23 @@ public class PayoutService {
         this.payoutRepo = payoutRepo;
         this.ledgerEntryRepo = ledgerEntryRepo;
     }
+    public PayoutResponse getPayoutStatus(String payoutId) {
+        // Query local database for the payout record
+        Payout payout = payoutRepo.findById(payoutId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Payout with ID " + payoutId + " not found"
+                ));
 
+        // Map database entity to response DTO
+        PayoutResponse response = new PayoutResponse();
+        response.setPayoutId(payout.getPayoutId());
+        response.setStatus(payout.getStatus().name());
+        response.setBankRef(payout.getBankRef());
+        response.setReason(payout.getReason());
+
+        return response;
+    }
     @Transactional
     public PayoutCreateResponse createPayout(PayoutRequest req) {
         if (req.getAmount() <= 0 || req.getAmount() > 5_000_000) {

@@ -12,4 +12,5 @@ public class PayoutResponse {
     private String bankRef;
     private boolean conflict;
     private LocalDateTime updatedAt;
+    private String reason;
 }
