@@ -4,7 +4,6 @@ import com.safaricom.mpessa_coding_interview.dto.TransferRequest;
 import com.safaricom.mpessa_coding_interview.dto.TransferResponse;
 import com.safaricom.mpessa_coding_interview.enums.TransferStatus;
 import com.safaricom.mpessa_coding_interview.enums.WalletStatus;
-import com.safaricom.mpessa_coding_interview.model.IdempotencyRecord;
 import com.safaricom.mpessa_coding_interview.model.LedgerEntry;
 import com.safaricom.mpessa_coding_interview.model.Transfer;
 import com.safaricom.mpessa_coding_interview.model.Wallet;
@@ -23,19 +22,20 @@ public class TransferService {
     private final WalletRepo walletRepo;
     private final TransferRepo transferRepo;
     private final LedgerEntryRepo ledgerEntryRepo;
-    private final IdempotencyRepo idempotencyRepo;
+    private final IdempotencyService idempotencyService;
 
     public TransferService(WalletRepo walletRepo, TransferRepo transferRepo, 
-                           LedgerEntryRepo ledgerEntryRepo, IdempotencyRepo idempotencyRepo) {
+                           LedgerEntryRepo ledgerEntryRepo, IdempotencyRepo idempotencyRepo
+    , IdempotencyService idempotencyService) {
         this.walletRepo = walletRepo;
         this.transferRepo = transferRepo;
         this.ledgerEntryRepo = ledgerEntryRepo;
-        this.idempotencyRepo = idempotencyRepo;
+        this.idempotencyService = idempotencyService;
     }
 
     @Transactional
     public TransferResponse executeTransfer(String idempotencyKey, TransferRequest req) {
-        // Validation checks
+        return idempotencyService.executeWithIdempotency(idempotencyKey, req, TransferResponse.class, () -> {   // Validation checks
         if (req.getAmount() <= 0 || req.getAmount() > 5_000_000) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid amount");
         }
@@ -103,6 +103,7 @@ public class TransferService {
         response.setCreatedAt(LocalDateTime.now());
 
         return response;
+        });
     }
 
     private void createLedgerEntry(String walletId, String type, int amount, int balanceAfter, String ref) {
